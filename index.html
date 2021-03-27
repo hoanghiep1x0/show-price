@@ -1,0 +1,362 @@
+
+ 
+    <style>
+
+        div#formCalPrice {
+            width: 800px;
+            margin: 50px auto;
+        }
+
+        div#formCalPrice .form-heading {
+            font-size: 36px;
+            text-align: center;
+        }
+
+        div#formCalPrice .form-wrap,div#formCalPrice .send_kgram, div#formCalPrice .send_money{
+            display: flex;
+            flex-wrap: wrap;
+            text-align: left;
+        }
+
+        div#formCalPrice .form-wrap .form-wrap-left, div#formCalPrice .send_kgram .form-wrap-left ,div#formCalPrice .send_money .form-wrap-left {
+            flex: 30%;
+            padding-bottom: 10px;
+        }
+
+        div#formCalPrice .form-wrap .form-wrap-right,div#formCalPrice .send_kgram .form-wrap-right,   div#formCalPrice .send_money  .form-wrap-right{
+            flex: 70%;
+            align-self: flex-end;
+            padding-bottom: 10px;
+        }
+
+        div#formCalPrice .form-wrap .form-wrap-left label {
+          line-height: 42px;
+        }
+
+        div#formCalPrice .form-wrap .form-wrap-right select {
+            line-height: 28px;
+            width: 430px;
+            padding: 6px;
+
+        }
+
+       .form-wrap-right input  {
+            line-height: 24px;
+            width: 420px;
+        }
+
+        div#formCalPrice .form-wrap .form-wrap-right #form-result {
+                line-height: 28px;
+                font-size: 16px;
+                color: red;
+                text-align: center;
+        }
+
+        
+
+        
+      
+    </style>
+
+    <div id="formCalPrice">
+      <h2 class="form-heading">BẢNG GIÁ</h2>
+      <div class="form-wrap">
+
+        <div class="form-wrap-left">
+            <label class="p" for="">Chọn phương thức gửi: </label>
+        </div>
+        <div class="form-wrap-right">
+            <select name="phuogthuc" id="phuongthuc" required="">
+                <option disabled="" hidden="" value="" selected="">Chọn phương thức gửi</option>
+                <option value="1">Hoa Kỳ Đến Việt Nam</option>
+                <option value="2">Việt Nam Đến Hoa Kỳ</option>
+                <option value="3">Gửi Hàng Xuyên Bang</option>
+                <option value="4">Gửi Hàng Đường Biển 2 Chiều</option>
+                <option value="5">Gửi Tiền</option>
+                <!-- <option value="6">Mua Hộ Lưu Kho</option> -->
+            </select> 
+        </div>
+
+        <div class="form-wrap-left">
+            <label class="p" for="">Chọn nơi muốn gửi đến: </label>
+        </div>
+
+        <div class="form-wrap-right"> 
+            <select name="diachi" id="diachi">
+                <option disabled="" hidden="" value="" selected="">Chọn nơi muốn gửi đến</option>
+                <option value="1">Sài Gòn (thành phố Hồ Chí Minh)</option>
+                <option value="2">Hoa Kỳ</option>
+                <option value="3">Tỉnh Thành Khác</option>
+            </select>
+            <select style="visibility: hidden;display: contents;" id="addr_hidden"></select>
+        </div>
+
+    
+      </div>
+      <div class="send_kgram">
+            <div class="form-wrap-left">
+                <label class="p" for="">Cân nặng ước tính (lb) </label>
+            </div>
+
+            <div class="form-wrap-right"> 
+                <input type="number" id="kg" name="kg" class="" required="" placeholder="Nhập khối lượng lb">
+            </div>
+      </div>
+
+      <div class="send_money">
+        <div class="form-wrap-left">
+            <label class="money_send" for="">Số Tiền Gửi  </label>
+        </div>
+
+        <div class="form-wrap-right"> 
+            <input type="number" id="money" name="money"required="" placeholder="Nhập số tiền">
+        </div>
+        </div>
+        <div class="form-wrap">
+            <div class="form-wrap-left">
+                <label class="p" for=""> Giá Tham Khảo  </label>
+            </div>
+            
+            <div class="form-wrap-right"> 
+                <span id="form-result">  $0 </span>
+            </div>
+         </div>
+
+    </div>
+
+  
+    <script type="text/javascript">
+
+      /*  ====== EVENT DOM + SELLECT ELEMENT ======= */
+    var $pt = document.getElementById('phuongthuc');
+    var $groupGram = document.querySelector(".send_kgram");
+    var $groupMoney = document.querySelector(".send_money");
+    var $diachi = document.getElementById('diachi');
+    var $kgElement = document.getElementById('kg');
+    var $money = document.getElementById('money');
+    var $diachiHidden = document.getElementById('addr_hidden');
+    
+    $groupGram.style.display  = "flex";
+    $groupMoney.style.display  = "none";
+
+    $pt.addEventListener('change', (event) => {
+      const result = document.getElementById('form-result');
+      result.innerHTML = '$'+calTotal();
+    });
+
+
+
+    $diachi.addEventListener('change', (event) => {
+      const result = document.getElementById('form-result');
+      result.innerHTML = '$'+calTotal();
+    });
+
+    
+
+     $kgElement.addEventListener('change', (event) => {
+      const result = document.getElementById('form-result');
+      result.innerHTML ='$'+ calTotal();
+    });
+
+  
+
+    $money.addEventListener('change', (event) => {
+    const result = document.getElementById('form-result');
+    result.innerHTML ='$'+ calTotal();
+    });
+
+
+   
+
+    $diachi.querySelectorAll("option").forEach(element => {
+        $diachiHidden.append(element.cloneNode(true));     
+    });
+ 
+
+    /*  ====== Funcation HANDLE ======= */
+
+    function calTotal() {
+        
+      var _pt = Number($pt.value);
+      var _kg = Number($kgElement.value);
+      var _addr = Number($diachi.value ? $diachi.value : 0);
+      var _result = 0;
+
+
+      $groupGram.style.display = "flex";
+      $groupMoney.style.display = "none";
+
+
+      if(!$diachi.value){
+        alert("Vui lòng chọn dữ liệu nơi muốn gửi đến");
+      }
+       
+   
+      /*==== Hoán vị lưu trữ xoá dữ liệu của element trong dom ====*/
+      var _valueDiachi =  $diachi.value;
+      
+        $diachi.querySelectorAll("option").forEach(elm=>{
+            elm.remove();
+        })
+
+        $diachiHidden.querySelectorAll("option").forEach(_item=>{   
+            $diachi.append(_item.cloneNode(true));  
+        })
+
+        $diachi.value = _valueDiachi;
+        /*==== option để ẩn dữ liệu của sellect ====*/
+         var $option = $diachi.querySelectorAll("option");
+    
+          
+  
+        switch(_pt) {
+          case 1:
+           //*================ CODE BLOCK HOA KỲ VỀ VIỆT NAM ================*//
+
+            $option[2] ? $option[2].remove() : null;            
+        
+            if(_kg<10){
+              $kgElement.setAttribute("placeholder","Vui lòng nhập tối thiểu 10 lbs")
+              _kg = 10;
+            }
+
+            switch (_addr) {
+                case 1:
+                    _result = calTotalByKgram(2.79,_kg);
+                    break;
+                case 3:
+                    _result = calTotalByKgram(3.79,_kg);
+                        break;
+                default:
+                _result = calTotalByKgram(2.79,_kg);
+                break;
+            }
+              
+            break;
+
+          case 2:
+      
+           //*================ CODE BLOCK VIỆT NAM ĐẾN HOA KỲ ================*//
+    
+            $option[1] ? $option[1].remove() : null;       
+            $option[3] ? $option[3].remove() : null;     
+
+            if(_kg<22){
+              $kgElement.setAttribute("placeholder","Vui lòng nhập tối thiểu 22 lbs")
+              _kg = 22;
+            }
+
+            if(_kg>=22 && _kg<66) {
+              _result = calTotalByKgram(6.99,_kg);
+            }else{
+
+                _result = calTotalByKgram(6.29,_kg);
+            }
+
+            break;
+          case 3:
+           //*================ CODE BLOCK XUYÊN BANG HOA KỲ ================*//
+            $option[1] ? $option[1].remove() : null;       
+            $option[3] ? $option[3].remove() : null;    
+
+            if(_kg<10){
+                $kgElement.setAttribute("placeholder","Vui lòng nhập tối thiểu 10 lbs")
+              _kg = 10;
+            }
+
+            _result = calTotalByKgram(1.79,_kg);
+
+            break;
+          case 4:
+            //*================ CODE BLOCK ĐƯỜNG BIỂN 2 CHIỀU ================*//
+         
+            switch (_addr) {
+                case 1:
+
+                if(_kg<220){
+                        _kg= 220;
+                        $kgElement.setAttribute("placeholder","Vui lòng nhập tối thiểu 220 lbs")
+                        _result = calTotalByKgram(1.99,_kg);
+                }else if(_kg>=220 && _kg<=299){
+                        _result = calTotalByKgram(1.99,_kg);
+                    }else{
+                        _result = calTotalByKgram(1.79,_kg);
+                    } 
+                    break;
+
+                case 2:
+                    if(_kg<220){
+                        _kg= 220;
+                        $kgElement.setAttribute("placeholder","Vui lòng nhập tối thiểu 220 lbs")
+                        _result = calTotalByKgram(1.99,_kg);
+                    }else if(_kg>=220 && _kg<=299){
+                            _result = calTotalByKgram(1.99,_kg);
+                        }else{
+                            _result = calTotalByKgram(1.79,_kg);
+                        } 
+                        break;
+                case 3:
+                    if(_kg<220){
+                         $kgElement.setAttribute("placeholder","Vui lòng nhập tối thiểu 220 lbs")
+                        _kg= 220;
+                        _result = calTotalByKgram(2.99,_kg);
+                    }else if(_kg>=220 && _kg<=299){
+                            _result = calTotalByKgram(2.99,_kg);
+                        }else{
+                            _result = calTotalByKgram(2.79,_kg);
+                        } 
+                    break;
+                default:
+                    break;
+            }
+            
+            break;
+          case 5:
+            // code block gửi tiền
+
+            $groupGram.style.display = "none";
+            $groupMoney.style.display = "flex";
+
+            _money = Number(document.getElementById('money').value);
+
+            if(_money<=100){
+                 _money= 100;  
+                 document.getElementById('money').value = 100;      
+            }
+
+            switch (_addr) {
+                case 1:
+                      _result = calTotalByMoney(1.99,_money);
+                    break;
+                case 2:
+                   _result = calTotalByMoney(3.99,_money);
+                   break;
+                case 3:
+                     _result = calTotalByMoney(2.99,_money);
+                    break;
+                default:
+                    break;
+            }
+
+            break;
+          default:
+            // code block
+            alert("Vui lòng điền dữ liệu để bảng giá tự động tính");
+            break;
+        }
+
+        return _result;
+
+      }
+
+      function calTotalByKgram(_price=0,_kg=1) {
+        return parseFloat((_price*_kg).toString()).toFixed(2)
+      }
+
+      function calTotalByMoney(pt=0,money=0) {
+          console.log("pt",pt,"money",money);
+        return parseFloat((money+(pt*money/100)).toString()).toFixed(2)
+      }
+
+
+    </script>
